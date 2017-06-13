@@ -9,23 +9,34 @@ import unittest
 #           1 if SUM(w_i * x_i) > 0;
 #           0 otherwise
 #         }
-def or_gate(a, b):
-    return (a or b)
+def or_gate(x):
+    y = 0
+    for i in x:
+        y += i
+    return (y > 0)
 
 # Here's our "unit tests".
-class or_gate_tests(unittest.TestCase):
+class two_input_or_gate_tests(unittest.TestCase):
 
     def test_both_false(self):
-        self.assertFalse(or_gate(0,0))
+        x = [0,0]
+        self.assertFalse(or_gate(x))
 
     def test_both_true(self):
-        self.assertTrue(or_gate(1,1))
+        x = [1,1]
+        self.assertTrue(or_gate(x))
 
     def test_A_true(self):
-        self.assertTrue(or_gate(0,1))
+        x = [0,1]
+        self.assertTrue(or_gate(x))
 
     def test_B_true(self):
-        self.assertTrue(or_gate(1,0))
+        x = [1,0]
+        self.assertTrue(or_gate(x))
+
+    def test_weights(self):
+        self.fail("Dont forget about me!")
+
 
 
 def main():
