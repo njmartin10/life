@@ -10,7 +10,7 @@ import unittest
 #           0 otherwise
 #         }
 def or_gate(a, b):
-    return 0
+    return a
 
 # Here's our "unit tests".
 class or_gate_tests(unittest.TestCase):
