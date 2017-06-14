@@ -18,7 +18,7 @@ def or_gate(x,w):
 
 def train_agent(x,w,d):
     for i in range(len(x)):
-        w[i] = x[i] * (d[i] - w[i])
+        w[i] = x[i] * (d - w[i])
 
 # Here's our "unit tests".
 class two_input_or_gate_tests(unittest.TestCase):
@@ -27,7 +27,7 @@ class two_input_or_gate_tests(unittest.TestCase):
         # set up expectations
         x = [0,0]
         w = [0,0]
-        d = [0,0]
+        d = 0
 
         # call function under test
         self.assertFalse(or_gate(x,w))
@@ -45,7 +45,7 @@ class two_input_or_gate_tests(unittest.TestCase):
         # set up expectations
         x = [1,1]
         w = [0,0]
-        d = [1,1]
+        d = 1
 
         # initially agent gets it wrong
         self.assertFalse(or_gate(x,w))
@@ -63,7 +63,7 @@ class two_input_or_gate_tests(unittest.TestCase):
         # set up expectations
         x = [0,1]
         w = [0,0]
-        d = [0,1]
+        d = 1
 
         # initially agent gets it wrong
         self.assertFalse(or_gate(x,w))
@@ -81,7 +81,7 @@ class two_input_or_gate_tests(unittest.TestCase):
         # set up expectations
         x = [1,0]
         w = [0,0]
-        d = [1,0]
+        d = 1
 
         # initially agent gets it wrong
         self.assertFalse(or_gate(x,w))
@@ -99,7 +99,7 @@ class two_input_or_gate_tests(unittest.TestCase):
         # set up expectations
         x = [1,1,1]
         w = [0,0,0]
-        d = [1,1,1]
+        d = 1
 
         # initially agent gets it wrong
         self.assertFalse(or_gate(x,w))
@@ -118,7 +118,7 @@ class two_input_or_gate_tests(unittest.TestCase):
         # set up expectations
         x = [1,1,0,1]
         w = [0,0,0,0]
-        d = [1,1,0,1]
+        d = 1
 
         # initially agent gets it wrong
         self.assertFalse(or_gate(x,w))
@@ -138,7 +138,7 @@ class two_input_or_gate_tests(unittest.TestCase):
         # set up expectations
         x = [0.1,0]
         w = [0,0]
-        d = [1,0]
+        d = 1
 
         # initially agent gets it wrong
         self.assertFalse(or_gate(x,w))
@@ -157,7 +157,7 @@ class two_input_or_gate_tests(unittest.TestCase):
         # set up expectations
         x = [0.1,0]
         w = [0,0]
-        d = [1,0]
+        d = 1
 
         # initially agent gets it wrong
         self.assertFalse(or_gate(x,w))
@@ -174,7 +174,7 @@ class two_input_or_gate_tests(unittest.TestCase):
         # Second Vector
         x = [0,0.1]
         # w = [0,0] # keep the same weights as before!
-        d = [0,1]
+        d = 1
 
         # test agent
         self.assertTrue(or_gate(x,w))
@@ -182,7 +182,7 @@ class two_input_or_gate_tests(unittest.TestCase):
         # Third Vector
         x = [0,0]
         # w = [0,0] # keep the same weights as before!
-        d = [0,0]
+        d = 0
 
         # test agent
         self.assertFalse(or_gate(x,w))
@@ -190,7 +190,7 @@ class two_input_or_gate_tests(unittest.TestCase):
         # Fourth Vector
         x = [9.0,0.5]
         # w = [0,0] # keep the same weights as before!
-        d = [1,1]
+        d = 1
 
         # test agent
         self.assertTrue(or_gate(x,w))
