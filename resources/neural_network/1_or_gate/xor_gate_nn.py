@@ -1,4 +1,5 @@
 import unittest
+import random
 
 #       _______
 #  A -- \\      \
@@ -9,191 +10,197 @@ import unittest
 #           1 if SUM(w_i * x_i) > 0;
 #           0 otherwise
 #         }
-def xor_gate(x,w):
+def activation_fn(y,x,w):
     y = 0
-    for i in x:
-        for j in w:
-            y += i*j
+    for i in range(len(x)):
+        y += x[i] * w[i]
     return (y > 0)
 
 def train_agent(x,w,d):
     for i in range(len(x)):
-        w[i] = x[i] * (d - w[i])
+        w = x[i] * (d - w)
+
+def train_or(w):
+    x = [
+        [1, 1],
+    ]
+
+    print
+    print w
+
+    d = [1]
+
+    for i in range(len(x)):
+        simple_train(x[i], w, d[i])
+
+    print w
+    print
+
+def train_and(w):
+    x = [
+        [0, 0],
+        [1, 0],
+        [0, 1],
+        [1, 1],
+    ]
+
+    print
+    print w
+
+    d = [0,0,0,1]
+
+    for i in range(len(x)):
+        simple_train(x[i], w, d[i])
+
+    print w
+    print
+    return w
+
+
+def simple_train(x, w, d):
+    for i in range(len(x)):
+        w[i] += x[i] * (d - w[i])
+
+def check_test_activation(self, x,w,d):
+    self.assertEquals(d, activation_fn(x, w))
+
 
 # Here's our unit tests
 class two_input_xor_gate_tests(unittest.TestCase):
 
     def test_both_false(self):
-        # set up expectations
-        x = [0,0]
-        w = [0,0]
+
+        x = [0, 0]
+
+        w = [random.random(), random.random()]
+        # w = [0, 0]
+
         d = 0
 
-        # call function under test
-        self.assertFalse(xor_gate(x,w))
+        print
+        print w
+        # simple_train(x, w, d)
+        print w
+        print
 
-        train_agent(x,w,d)
+        check_test_activation(self, x, w, d)
 
-        # Test that weights are not updated
-        # self.assertFalse(w[0])
-        # self.assertFalse(w[1])
-
-        # ensure agent still gets it right after training
-        self.assertFalse(xor_gate(x,w))
 
     def test_both_true(self):
-        # set up expectations
-        x = [1,1]
-        w = [0,0]
-        d = 0
 
-        # before training
-        self.assertFalse(xor_gate(x,w))
+        x = [1, 1]
 
-        train_agent(x,w,d)
+        # w = [random.random(), random.random()]
+        w = [0, 0]
 
-        # Test that weights are updated
-        # self.assertTrue(w[0])
-        # self.assertTrue(w[1])
-
-        # after training
-        self.assertFalse(xor_gate(x,w))
-
-    def test_A_true(self):
-        # set up expectations
-        x = [0,1]
-        w = [0,0]
         d = 1
 
-        # initially agent gets it wrong
-        self.assertFalse(xor_gate(x,w))
+        print
+        print w
+        simple_train(x, w, d)
+        print w
+        print
 
-        train_agent(x,w,d)
+        check_test_activation(self, x, w, d)
 
-        # Test that weights are updated
-        self.assertFalse(w[0])
-        self.assertTrue(w[1])
+    def test_first_true(self):
 
-        # then agent "learns"
-        self.assertTrue(xor_gate(x,w))
+        x = [1, 0]
 
-    def test_B_true(self):
-        # set up expectations
-        x = [1,0]
-        w = [0,0]
+        # w = [random.random(), random.random()]
+        w = [0, 0]
+
         d = 1
 
-        # initially agent gets it wrong
-        self.assertFalse(xor_gate(x,w))
+        print
+        print w
+        simple_train(x, w, d)
+        print w
+        print
 
-        train_agent(x,w,d)
+        check_test_activation(self, x, w, d)
 
-        # Test that weights are updated
-        self.assertTrue(w[0])
-        self.assertFalse(w[1])
+    def test_second_true(self):
 
-        # then agent "learns"
-        self.assertTrue(xor_gate(x,w))
+        x = [0, 1]
 
-    # def test_3_true_inputs(self):
-    #     # set up expectations
-    #     x = [1,1,1]
-    #     w = [0,0,0]
-    #     d = 1
-    #
-    #     # initially agent gets it wrong
-    #     self.assertFalse(xor_gate(x,w))
-    #
-    #     train_agent(x,w,d)
-    #
-    #     # Test that weights are updated
-    #     self.assertTrue(w[0])
-    #     self.assertTrue(w[1])
-    #     self.assertTrue(w[2])
-    #
-    #     # then agent "learns"
-    #     self.assertTrue(xor_gate(x,w))
-    #
-    # def test_3_true_1_false_inputs(self):
-    #     # set up expectations
-    #     x = [1,1,0,1]
-    #     w = [0,0,0,0]
-    #     d = 1
-    #
-    #     # initially agent gets it wrong
-    #     self.assertFalse(xor_gate(x,w))
-    #
-    #     train_agent(x,w,d)
-    #
-    #     # Test that weights are updated
-    #     self.assertTrue(w[0])
-    #     self.assertTrue(w[1])
-    #     self.assertFalse(w[2])
-    #     self.assertTrue(w[3])
-    #
-    #     # then agent "learns"
-    #     self.assertTrue(xor_gate(x,w))
-    #
-    # def test_two_floats(self):
-    #     # set up expectations
-    #     x = [0.1,0]
-    #     w = [0,0]
-    #     d = 1
-    #
-    #     # initially agent gets it wrong
-    #     self.assertFalse(xor_gate(x,w))
-    #
-    #     train_agent(x,w,d)
-    #
-    #     # Test that weights are updated
-    #     self.assertEquals(w[0], 0.1)
-    #     self.assertEquals(w[1], 0)
-    #
-    #     # then agent "learns"
-    #     self.assertTrue(xor_gate(x,w))
-    #
-    # def test_4_vectors_of_floats(self):
-    #     # First Vector
-    #     # set up expectations
-    #     x = [0.1,0]
-    #     w = [0,0]
-    #     d = 1
-    #
-    #     # initially agent gets it wrong
-    #     self.assertFalse(xor_gate(x,w))
-    #
-    #     train_agent(x,w,d)
-    #
-    #     # Test that weights are updated
-    #     self.assertEquals(w[0], 0.1)
-    #     self.assertEquals(w[1], 0)
-    #
-    #     # then agent "learns"
-    #     self.assertTrue(xor_gate(x,w))
-    #
-    #     # Second Vector
-    #     x = [0,0.1]
-    #     # w = [0,0] # keep the same weights as before!
-    #     d = 1
-    #
-    #     # test agent
-    #     self.assertTrue(xor_gate(x,w))
-    #
-    #     # Third Vector
-    #     x = [0,0]
-    #     # w = [0,0] # keep the same weights as before!
-    #     d = 0
-    #
-    #     # test agent
-    #     self.assertFalse(xor_gate(x,w))
-    #
-    #     # Fourth Vector
-    #     x = [9.0,0.5]
-    #     # w = [0,0] # keep the same weights as before!
-    #     d = 1
-    #
-    #     # test agent
-    #     self.assertTrue(xor_gate(x,w))
+        # w = [random.random(), random.random()]
+        w = [0, 0]
+
+        d = 1
+
+        print
+        print w
+        simple_train(x, w, d)
+        print w
+        print
+
+        check_test_activation(self, x, w, d)
+
+    def test_train_then_test_multiple_or(self):
+
+        # initialize weights
+        w = [0, 0]
+
+        train_or(w)
+
+        x = [
+            [1, 0],
+            [0, 0],
+            [0, 1],
+            [1, 0],
+            [1, 1],
+            [0, 1],
+            [0, 0],
+            [0.5, 0],
+        ]
+
+        d = [
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+        ]
+
+        for i in range(len(x)):
+            check_test_activation(self, x[i], w, d[i])
+
+    def test_train_then_test_multiple_and(self):
+
+        # initialize weights
+        w = [0.1, 0.1]
+
+        train_and(w)
+
+        x = [
+            [1, 0],
+            [0, 0],
+            [0, 1],
+            [1, 0],
+            [1, 1],
+            [0, 1],
+            [0, 0],
+            [0.5, 0],
+        ]
+
+        d = [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+        ]
+
+        for i in range(len(x)):
+            print i
+            check_test_activation(self, x[i], w, d[i])
 
 
 def main():
