@@ -1,5 +1,9 @@
+#!/usr/local/bin/python
 import unittest
-import random
+from random import choice
+from numpy import array, dot, random
+import matplotlib.pyplot as plt
+
 
 #       _______
 #  A -- \\      \
@@ -10,197 +14,98 @@ import random
 #           1 if SUM(w_i * x_i) > 0;
 #           0 otherwise
 #         }
-def activation_fn(y,x,w):
-    y = 0
-    for i in range(len(x)):
-        y += x[i] * w[i]
-    return (y > 0)
+# Be able to discuss what you understand of this and what are it's limitations
 
-def train_agent(x,w,d):
-    for i in range(len(x)):
-        w = x[i] * (d - w)
-
-def train_or(w):
-    x = [
-        [1, 1],
-    ]
-
-    print
-    print w
-
-    d = [1]
-
-    for i in range(len(x)):
-        simple_train(x[i], w, d[i])
-
-    print w
-    print
-
-def train_and(w):
-    x = [
-        [0, 0],
-        [1, 0],
-        [0, 1],
-        [1, 1],
-    ]
-
-    print
-    print w
-
-    d = [0,0,0,1]
-
-    for i in range(len(x)):
-        simple_train(x[i], w, d[i])
-
-    print w
-    print
-    return w
+unit_step_prediction = lambda x: 0 if x < 0 else 1
 
 
-def simple_train(x, w, d):
-    for i in range(len(x)):
-        w[i] += x[i] * (d - w[i])
+w = random.rand(3)
+errors = []
+eta = 0.2
+n = 100
 
-def check_test_activation(self, x,w,d):
-    self.assertEquals(d, activation_fn(x, w))
+def train(training_data, w):
+    for i in xrange(n):
+        x, expected = choice(training_data)
+        result = dot(w, x)
+        error = expected - unit_step_prediction(result)
+        errors.append(error)
+        w += eta * error * x
+
+def print_data(training_data, w):
+    print ""
+    for x, _ in training_data:
+        result = dot(x, w)
+        print("{}: {} -> {}".format(x[:2], result, unit_step_prediction(result)))
+
+    fig1 = plt.figure()
+    plt.plot(errors)
+
+    # plt.show()
+
+def check_data(training_data, w, self):
+    for x, _ in training_data:
+        result = dot(x, w)
+        self.assertEquals(_, unit_step_prediction(result))
 
 
 # Here's our unit tests
 class two_input_xor_gate_tests(unittest.TestCase):
+    def setUp(self):
+        w = random.rand(3)
 
-    def test_both_false(self):
-
-        x = [0, 0]
-
-        w = [random.random(), random.random()]
-        # w = [0, 0]
-
-        d = 0
-
-        print
-        print w
-        # simple_train(x, w, d)
-        print w
-        print
-
-        check_test_activation(self, x, w, d)
-
-
-    def test_both_true(self):
-
-        x = [1, 1]
-
-        # w = [random.random(), random.random()]
-        w = [0, 0]
-
-        d = 1
-
-        print
-        print w
-        simple_train(x, w, d)
-        print w
-        print
-
-        check_test_activation(self, x, w, d)
-
-    def test_first_true(self):
-
-        x = [1, 0]
-
-        # w = [random.random(), random.random()]
-        w = [0, 0]
-
-        d = 1
-
-        print
-        print w
-        simple_train(x, w, d)
-        print w
-        print
-
-        check_test_activation(self, x, w, d)
-
-    def test_second_true(self):
-
-        x = [0, 1]
-
-        # w = [random.random(), random.random()]
-        w = [0, 0]
-
-        d = 1
-
-        print
-        print w
-        simple_train(x, w, d)
-        print w
-        print
-
-        check_test_activation(self, x, w, d)
-
-    def test_train_then_test_multiple_or(self):
-
-        # initialize weights
-        w = [0, 0]
-
-        train_or(w)
-
-        x = [
-            [1, 0],
-            [0, 0],
-            [0, 1],
-            [1, 0],
-            [1, 1],
-            [0, 1],
-            [0, 0],
-            [0.5, 0],
+    def test_or_gate(self):
+        training_data = [
+            (array([0,0,1]), 0),
+            (array([0,1,1]), 1),
+            (array([1,0,1]), 1),
+            (array([1,1,1]), 1),
         ]
 
-        d = [
-            1,
-            0,
-            1,
-            1,
-            1,
-            1,
-            0,
-            1,
+        train(training_data, w)
+
+        print_data(training_data, w)
+        check_data(training_data, w, self)
+
+
+    def test_and_gate(self):
+        training_data = [
+            (array([0,0,1]), 0),
+            (array([0,1,1]), 0),
+            (array([1,0,1]), 0),
+            (array([1,1,1]), 1),
         ]
 
-        for i in range(len(x)):
-            check_test_activation(self, x[i], w, d[i])
+        train(training_data, w)
 
-    def test_train_then_test_multiple_and(self):
+        print_data(training_data, w)
+        check_data(training_data, w, self)
 
-        # initialize weights
-        w = [0.1, 0.1]
-
-        train_and(w)
-
-        x = [
-            [1, 0],
-            [0, 0],
-            [0, 1],
-            [1, 0],
-            [1, 1],
-            [0, 1],
-            [0, 0],
-            [0.5, 0],
+    def test_xor_gate(self):
+        training_data = [
+            (array([0,0,1]), 0),
+            (array([0,1,1]), 1),
+            (array([1,0,1]), 1),
+            (array([1,1,1]), 0),
         ]
 
-        d = [
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
+        train(training_data, w)
+
+        print_data(training_data, w)
+        check_data(training_data, w, self)
+
+    def test_nand_gate(self):
+        training_data = [
+            (array([0,0,1]), 1),
+            (array([0,1,1]), 1),
+            (array([1,0,1]), 1),
+            (array([1,1,1]), 0),
         ]
 
-        for i in range(len(x)):
-            print i
-            check_test_activation(self, x[i], w, d[i])
+        train(training_data, w)
+
+        print_data(training_data, w)
+        check_data(training_data, w, self)
 
 
 def main():
