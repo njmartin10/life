@@ -1,2 +1,1 @@
-Directory to store projects related to artificially intelligent agents
-
+Directory to store artificially intelligent agents
