@@ -3,8 +3,6 @@ import random
 import numpy as np
 import math
 
-from Agents.models import DQN
-
 
 class Something(object):
     """
@@ -56,9 +54,6 @@ class Something(object):
 
         self.display_position = None
         self.display_size = None
-
-        self.brain = DQN(n_sensors=len(self.sensors),
-                         n_actions=len(self.actions)-1)
 
     def create_body(self):
         self.display_position = int(self.screen_controller.mx + (self.screen_controller.dx + self.position[0])
@@ -216,12 +211,7 @@ class Something(object):
         # choose an action in the set of actions every "reaction_time" frames
         if self.count_frame % self.reaction_time == 0:
             if self.random_agent:
-                #self.speed = 0
                 self.choose_action("random")
-            else:
-                sensors_values = self.get_sensors_values(objects)
-                action = self.brain.run_train(sensors_values, self.rewards)
-                self.choose_action(self.actions[action])
 
         # update real values
         self.move()
